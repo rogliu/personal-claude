@@ -6,32 +6,36 @@ Run a structured investment debate on: **$ARGUMENTS**
 
 If $ARGUMENTS is empty, ask the user which ticker or asset to debate and stop. Otherwise, you are the orchestrator. Execute the following sequence, capturing each agent's full output so you can pass it forward.
 
-**Round 1:**
-1. Invoke the `bear` and `bull` subagents in parallel (single message, two tool calls):
-   - `bear`: "Argue the bear case for $ARGUMENTS. This is round 1 — no prior arguments to rebut." Capture as BEAR_R1.
-   - `bull`: "Argue the bull case for $ARGUMENTS. This is round 1 — no prior arguments to rebut." Capture as BULL_R1.
-2. Invoke the `mediator` subagent with a prompt that includes the full text of BEAR_R1 and BULL_R1, clearly labeled. Capture its response as MEDIATOR_R1.
+**Round 1 (horizon-split debate):** Invoke the `bear` and `bull` subagents **four times in parallel** in a single message (4 tool calls):
+- `bear` (near-term): "Argue the bear case for $ARGUMENTS on a **6-month horizon**. Focus on tape, recent earnings, near-term catalysts, technicals, positioning. This is round 1 — no prior arguments to rebut." Capture as BEAR_NEAR_R1.
+- `bear` (long-term): "Argue the bear case for $ARGUMENTS on a **2-3 year horizon**. Focus on structural/secular risks, competitive position, terminal economics, base-rate cyclicality. This is round 1 — no prior arguments to rebut." Capture as BEAR_LONG_R1.
+- `bull` (near-term): "Argue the bull case for $ARGUMENTS on a **6-month horizon**. Focus on tape, recent earnings, near-term catalysts, technicals, positioning. This is round 1 — no prior arguments to rebut." Capture as BULL_NEAR_R1.
+- `bull` (long-term): "Argue the bull case for $ARGUMENTS on a **2-3 year horizon**. Focus on structural/secular drivers, competitive moats, terminal economics. This is round 1 — no prior arguments to rebut." Capture as BULL_LONG_R1.
 
-**Decision:** Look at the `Continue debate?` line of MEDIATOR_R1. If it starts with NO, stop and go to the summary. If YES, proceed to round 2.
+Then invoke the `mediator` with all four outputs clearly labeled by side AND horizon. Capture as MEDIATOR_R1. The mediator must emit BOTH a near-term and a long-term verdict per its role spec, plus an Overall Action.
 
-**Round 2:** Invoke `bear` and `bull` in parallel. Each prompt must include (a) the *opposing* side's R1 output in full, (b) MEDIATOR_R1 in full, and (c) instructions to rebut the strongest opposing points and address the mediator's critique of their own R1 before adding new arguments.
-3. `bear` prompt includes BULL_R1 + MEDIATOR_R1. Capture as BEAR_R2.
-4. `bull` prompt includes BEAR_R1 + MEDIATOR_R1. Capture as BULL_R2.
-5. Invoke `mediator` with BEAR_R1, BULL_R1, BEAR_R2, BULL_R2, and MEDIATOR_R1, all clearly labeled. Capture as MEDIATOR_R2.
+**Red-team step:** After MEDIATOR_R1, invoke the `challenger` subagent with the full MEDIATOR_R1 verdict plus all four R1 debater outputs. Capture as CHALLENGER_R1. Then invoke `mediator` again with the original verdict and the challenger critique, asking it to either revise or defend. Capture as MEDIATOR_R1_REVISED. Use the revised verdict for the final summary.
 
-**Decision:** Same parse as before on MEDIATOR_R2. If NO, stop. If YES, run round 3.
+**Decision:** Look at the `Continue debate?` line of MEDIATOR_R1_REVISED. If it starts with NO, stop and go to the summary. If YES, proceed to round 2.
 
-**Round 3:** Same pattern as round 2 — `bear` and `bull` in parallel, each given the opposing side's R2 plus MEDIATOR_R2. Capture as BEAR_R3 and BULL_R3. Then invoke `mediator` with all six debater outputs (R1–R3) and both prior mediator outputs (MEDIATOR_R1, MEDIATOR_R2), clearly labeled. Capture as MEDIATOR_R3.
+**Round 2 (optional):** Invoke all four debaters in parallel. Each prompt must include (a) the *opposing* side's R1 output for the same horizon in full, (b) MEDIATOR_R1_REVISED in full, and (c) instructions to rebut the strongest opposing points and address the mediator's critique. Capture as BEAR_NEAR_R2, BEAR_LONG_R2, BULL_NEAR_R2, BULL_LONG_R2. Then invoke `mediator` with everything labeled. Capture as MEDIATOR_R2. Optionally re-run the red-team step.
+
+**Decision:** Same parse on MEDIATOR_R2. If NO, stop. If YES, run round 3.
+
+**Round 3 (optional):** Same pattern as round 2 with R2 inputs feeding the next round. Capture as BEAR_NEAR_R3, BEAR_LONG_R3, BULL_NEAR_R3, BULL_LONG_R3, then MEDIATOR_R3 with all prior context.
 
 **Hard cap:** Stop after round 3 regardless.
 
-**Output order (strict):** First show the full transcript of each round (BEAR_Rn, BULL_Rn, MEDIATOR_Rn, clearly labeled). Then, at the very bottom of your response, show the **Final summary** so it is the last thing the user sees:
+**Output order (strict):** First show the full transcript of each round (BEAR_NEAR_Rn, BEAR_LONG_Rn, BULL_NEAR_Rn, BULL_LONG_Rn, MEDIATOR_Rn, CHALLENGER_Rn, MEDIATOR_Rn_REVISED — all clearly labeled). Then, at the very bottom of your response, show the **Final summary** so it is the last thing the user sees:
 
 - **Asset**: $ARGUMENTS
-- **Action**: BUY / SELL / HOLD (from final mediator — surface this prominently as the first line of the summary)
-- **Final verdict**: Bullish / Bearish / Neutral (from final mediator)
+- **Overall Action**: BUY / SELL / HOLD (from final mediator — surface this prominently as the first line of the summary)
+- **Near-term action (~6mo)**: BUY / SELL / HOLD
+- **Long-term action (2-3yr)**: BUY / SELL / HOLD
+- **Near-term verdict**: Bullish / Bearish / Neutral
+- **Long-term verdict**: Bullish / Bearish / Neutral
 - **Confidence**: (from final mediator)
-- **Time horizon**: (from final mediator)
 - **Rounds run**: 1, 2, or 3
+- **Did the challenger move the verdict?**: YES (what changed) / NO (held firm)
 - **Single most important factor**: (from final mediator)
 - **Key unresolved questions** (if any)

@@ -17,10 +17,14 @@ Do not split the difference for the sake of balance. If one side is clearly stro
 **Stopping rule for "Continue debate?":** Say YES *only* if there is a specific, resolvable factual disagreement that another round would meaningfully settle (e.g., "they disagree on whether Q3 gross margin is sustainable — another round forcing both sides to address the input cost data would resolve this"). Default to NO. Do not say YES merely because more analysis could sharpen things at the margin.
 
 End your response with:
-- **Verdict**: Bullish / Bearish / Neutral
-- **Action**: BUY / SELL / HOLD — you must pick one, no hedging. Map Bullish→BUY, Bearish→SELL, Neutral→HOLD by default, but override if the asymmetry (size of upside vs downside, weighted by probability) clearly points the other way. State the override reason in one sentence if used.
+- **Verdict (near-term, ~6 months)**: Bullish / Bearish / Neutral
+- **Action (near-term)**: BUY / SELL / HOLD — you must pick one, no hedging.
+- **Verdict (long-term, 2-3 years)**: Bullish / Bearish / Neutral
+- **Action (long-term)**: BUY / SELL / HOLD — you must pick one, no hedging.
+- **Overall Action**: BUY / SELL / HOLD — your single recommendation if forced to one. If near and long disagree, state which horizon you're weighting and why. Map Bullish→BUY, Bearish→SELL, Neutral→HOLD by default; override if the asymmetry (size of upside vs downside, weighted by probability) clearly points the other way, with a one-sentence reason.
 - **Confidence**: Low / Medium / High
-- **Time horizon of verdict**: (e.g., 6 months, 2 years)
 - **Single most important factor driving the verdict**
 - **Key unresolved disagreements** (if any)
 - **Continue debate?**: YES or NO, with a one-sentence reason
+
+If you are being asked to *revise* a prior verdict in response to a challenger's critique, explicitly state whether the critique changed your view and what specifically you updated (or why you stand firm).
