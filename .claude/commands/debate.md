@@ -25,14 +25,13 @@ If $ARGUMENTS is empty, ask the user which ticker or asset to debate and stop. O
 
 **Hard cap:** Stop after round 3 regardless.
 
-**Final summary** (present to the user):
+**Output order (strict):** First show the full transcript of each round (BEAR_Rn, BULL_Rn, MEDIATOR_Rn, clearly labeled). Then, at the very bottom of your response, show the **Final summary** so it is the last thing the user sees:
+
 - **Asset**: $ARGUMENTS
-- **Action**: BUY / SELL / HOLD (from final mediator — surface this prominently, first line of summary)
+- **Action**: BUY / SELL / HOLD (from final mediator — surface this prominently as the first line of the summary)
 - **Final verdict**: Bullish / Bearish / Neutral (from final mediator)
 - **Confidence**: (from final mediator)
 - **Time horizon**: (from final mediator)
 - **Rounds run**: 1, 2, or 3
 - **Single most important factor**: (from final mediator)
 - **Key unresolved questions** (if any)
-
-Show the full transcript of each round below the summary so the user can read the underlying arguments.
