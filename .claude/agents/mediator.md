@@ -18,6 +18,7 @@ Do not split the difference for the sake of balance. If one side is clearly stro
 
 End your response with:
 - **Verdict**: Bullish / Bearish / Neutral
+- **Action**: BUY / SELL / HOLD — you must pick one, no hedging. Map Bullish→BUY, Bearish→SELL, Neutral→HOLD by default, but override if the asymmetry (size of upside vs downside, weighted by probability) clearly points the other way. State the override reason in one sentence if used.
 - **Confidence**: Low / Medium / High
 - **Time horizon of verdict**: (e.g., 6 months, 2 years)
 - **Single most important factor driving the verdict**

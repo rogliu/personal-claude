@@ -27,7 +27,8 @@ If $ARGUMENTS is empty, ask the user which ticker or asset to debate and stop. O
 
 **Final summary** (present to the user):
 - **Asset**: $ARGUMENTS
-- **Final verdict**: (from final mediator)
+- **Action**: BUY / SELL / HOLD (from final mediator — surface this prominently, first line of summary)
+- **Final verdict**: Bullish / Bearish / Neutral (from final mediator)
 - **Confidence**: (from final mediator)
 - **Time horizon**: (from final mediator)
 - **Rounds run**: 1, 2, or 3
