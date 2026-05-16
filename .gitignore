@@ -1,0 +1,3 @@
+# Personal financial data — never commit/push these
+.claude/portfolio.json
+.claude/verdict-ledger.jsonl
